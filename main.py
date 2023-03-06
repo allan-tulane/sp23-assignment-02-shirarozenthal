@@ -46,19 +46,35 @@ def pad(x,y):
 
 
 def subquadratic_multiply(x, y):
-    ### TODO
-    pass
-    ###
+
+    if x.decimal_val <= 1 and y.decimal_val <= 1:
+        return x.decimal_val * y.decimal_val
+
+    x.binary_vec, y.binary_vec = pad(x.binary_vec,y.binary_vec)
+
+    n = len(x.binary_vec)
+
+    xl, xr = split_number(x.binary_vec)
+    yl, yr = split_number(y.binary_vec)
+    
+    xlyl = BinaryNumber(subquadratic_multiply(xl,yl))
+    xryr = BinaryNumber(subquadratic_multiply(xr,yr))
+    
+    m = bit_shift(BinaryNumber(subquadratic_multiply(BinaryNumber(xl.decimal_val + xr.decimal_val), BinaryNumber(yl.decimal_val + yr.decimal_val)) ), n//2).decimal_val
+    l = bit_shift(xlyl ,n).decimal_val - bit_shift(xlyl ,n//2).decimal_val
+    r = xryr.decimal_val - bit_shift(xryr ,n//2).decimal_val
+    
+    return l + m + r
 
 ## Feel free to add your own tests here.
 def test_multiply():
     assert subquadratic_multiply(BinaryNumber(2), BinaryNumber(2)) == 2*2
+    assert subquadratic_multiply(BinaryNumber(4), BinaryNumber(4)) == 4*4
+    assert subquadratic_multiply(BinaryNumber(15), BinaryNumber(5)) == 15*5
+    assert subquadratic_multiply(BinaryNumber(20), BinaryNumber(20)) == 20*20
 
 def time_multiply(x, y, f):
     start = time.time()
     # multiply two numbers x, y using function f
+    f(x,y)
     return (time.time() - start)*1000
-
-    
-    
-
